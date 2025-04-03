@@ -12,6 +12,7 @@ import {
   CardHeader,
   // CardTitle,
   CardFooter,
+  CardTitle,
 } from '@/components/ui/card';
 import Image from 'next/image';
 
@@ -26,6 +27,8 @@ export function ExcelReaderWithCardsComponent() {
   const [error, setError] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [excelData, setExcelData] = useState<ExcelData[]>([]);
+
+  console.log('excelData', excelData);
 
   const readExcelFile = useCallback(() => {
     if (!file) {
@@ -88,47 +91,35 @@ export function ExcelReaderWithCardsComponent() {
   console.log('Excel data:', excelData);
 
   return (
-    <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
-      <div className="flex flex-col items-center">
-        <h1 className="text-5xl font-bold mb-6 text-center text-[#2d41ac] mt-6 ">
-          FRAN
-        </h1>
-        <div className="flex items-center">
-          <div className="flex items-center border-4 border-[#8b96ce] rounded-lg">
-            <Image
-              src="/fran.jpg"
-              alt="Fran"
-              width={256}
-              height={256}
-              className="mx-auto"
-            />
-          </div>
-        </div>
-        <div className="flex items-center my-10 ">
-          <Image
-            src="/words.png"
-            alt="Fran"
-            width={750}
-            height={750}
-            className="mx-auto"
-          />
-        </div>
-      </div>
+    <div className="container mx-auto p-4 bg-gray-100">
       {excelData.length === 0 ? (
-        <div className="mb-6 max-w-md mx-auto">
+        <div className="mb-6 mx-auto space-y-4 p-6 bg-white shadow-lg rounded-lg w-full">
+          <label
+            htmlFor="file-upload"
+            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[##F7931E] rounded-lg cursor-pointer hover:bg-gray-50 transition duration-200"
+          >
+            <span className="text-[#F7931E] font-medium">
+              📂 Click to upload Excel file
+            </span>
+            <span className="text-sm text-gray-500">(.xlsx, .xls)</span>
+          </label>
           <Input
             id="file-upload"
             type="file"
             onChange={handleFileChange}
             accept=".xlsx, .xls"
-            className="mb-4 border-2 border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#8b96ce]"
+            className="hidden"
           />
           <Button
             onClick={readExcelFile}
             disabled={!file}
-            className="w-full bg-[#8b96ce] text-white font-semibold rounded-lg hover:bg-[#8b96ce] transition duration-200"
+            className={`w-full py-3 font-semibold rounded-lg transition duration-300 ${
+              file
+                ? 'bg-[#F7931E] text-white hover:bg-[###FFBE7A] shadow-md'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
           >
-            get Messages
+            📩 Get Messages
           </Button>
         </div>
       ) : null}
@@ -139,52 +130,64 @@ export function ExcelReaderWithCardsComponent() {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {excelData.map((item, index) => (
-          <Card
-            key={index}
-            className="w-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white flex flex-col"
-          >
-            <CardHeader className="bg-gradient-to-r from-[#8b96ce] to-[#7281c8] text-white p-4">
-              {/* <CardTitle className="text-xl font-semibold">
-                {item.Name}
-              </CardTitle> */}
-            </CardHeader>
-            <div className="p-4 flex-grow">
-              <p className="text-gray-700 text-lg italic">
-                &quot;
-                {
-                  item[
-                    Object.keys(item).find((key) =>
-                      key.toLowerCase().includes('send')
-                    ) || ''
-                  ]
-                }
-                &quot;
-              </p>
-            </div>
-            {item.Photo && (
-              <div className="flex justify-center items-center mt-4">
-                <Image
-                  src={
-                    item.Name === 'Evelin Ortiz'
-                      ? '/Eve.jpg'
-                      : item.Name === 'Isabel Moreira'
-                      ? '/isa.jpeg'
-                      : ''
+      {excelData.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {excelData.map((item, index) => (
+            <Card
+              key={index}
+              className="w-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white flex flex-col"
+            >
+              <CardHeader className="bg-gradient-to-r  from-[#F7931E] via-[#FFA94D] to-[#FFBE7A]  text-white p-4">
+                <CardTitle className="text-xl font-semibold">
+                  {item.Teammate}
+                </CardTitle>
+              </CardHeader>
+              <div className="p-4 flex-grow">
+                <p className="text-gray-700 text-lg italic">
+                  &quot;
+                  {
+                    item[
+                      Object.keys(item).find((key) =>
+                        key.toLowerCase().includes('reason')
+                      ) || ''
+                    ]
                   }
-                  alt="Fran"
-                  width={500}
-                  height={300}
-                />
+                  &quot;
+                </p>
               </div>
-            )}
-            <CardFooter className="bg-gray-300 p-4 flex justify-end">
-              <p className="text-sm font-bold text-gray-600">- {item.Name}</p>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+              {item.Photo && (
+                <div className="flex justify-center items-center mt-4">
+                  <Image
+                    src={
+                      item.Name === 'Evelin Ortiz'
+                        ? '/Eve.jpg'
+                        : item.Name === 'Isabel Moreira'
+                        ? '/isa.jpeg'
+                        : ''
+                    }
+                    alt="Fran"
+                    width={500}
+                    height={300}
+                  />
+                </div>
+              )}
+              <CardFooter className="bg-gray-300 p-4 flex justify-end">
+                <p className="text-sm font-bold text-gray-600">
+                  By {item.Name}
+                </p>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
+      {excelData.length > 0 && (
+        <Button
+          className="bg-[#F7931E] text-white hover:bg-[#FFBE7A] shadow-md px-4 py-2 rounded-md w-full mt-8"
+          onClick={() => setExcelData([])}
+        >
+          Import Again
+        </Button>
+      )}
     </div>
   );
 }
