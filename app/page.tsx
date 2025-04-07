@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { ExcelReaderWithCardsComponent } from '@/components/excel-reader-with-cards';
+import { ExcelReaderWithCardsComponent } from '@/components/ui/Reader';
 
 export default function Page() {
   return (
